@@ -1,0 +1,47 @@
+version: '3'
+services:
+  nginx:
+    container_name: 'nginx'
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./inf.u-szeged.hu-ucc.key:/etc/nginx/inf.u-szeged.hu-ucc.key
+      - ./inf.u-szeged.hu-ucc.cert:/etc/nginx/inf.u-szeged.hu-ucc.cert
+    ports:
+      - 3005:3005
+    depends_on:
+      - rasa_server
+      - action_server
+      - chatbot_ui
+      - flask_tts
+      - stt_tunnel
+  rasa_server:
+    container_name: 'rasa_server'
+    build:
+      context: rasa_server
+    ports:
+      - '5005:5005'
+  action_server:
+    container_name: 'action_server'
+    build:
+      context: action_server
+    ports:
+      - '5055:5055'
+  chatbot_ui:
+    container_name: 'chatbot_ui'
+    build:
+      context: nodejs
+    ports:
+      - '3000:3000'
+  flask_tts:
+    container_name: 'flask_tts'
+    build:
+      context: flask_tts
+    ports:
+      - '3001:3001'
+  stt_tunnel:
+    container_name: 'stt_tunnel1'
+    build:
+      context: docker_tunnel
+    ports:
+      - '4117:8000'
