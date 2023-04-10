@@ -5,6 +5,11 @@ from utils import load_responses
 # from datetime import datetime, timedelta
 # from datetimerange import DateTimeRange
 import wikipedia as wp
+import qa as qa
+import requests
+import json
+from datetime import datetime
+import random
 
 APPOINTMENT_MAX_LEN = 3700
 RESPONSES = load_responses()
@@ -103,11 +108,46 @@ class ActionBlocks:
         # self.time_table = time_table
         self.dispatcher = dispatcher
         
-    def do_bot_search_on_wiki(self):
+    # def do_bot_search_on_wiki(self):
+    #     self.dispatcher.utter_message(
+    #         template="utter_wiki",
+    #     )
+    #     wp.set_lang("hu")
+    #     self.dispatcher.utter_message(f"hello, the wiki:{wp.wikipedia.summary(self.text)}") # todo: text - intent
+        
+    def do_bot_ask_for_review(self):
         # self.dispatcher.utter_message(f"hello, the wiki:{wp.wikipedia.summary(self.text)}" or "heloszia")
+        
         self.dispatcher.utter_message(
-            template="utter_wiki",
+            template="utter_visszajelzes"
         )
+        
+    def do_bot_question(self):
+        # print(self.text + "ASDASDAF")
+        self.dispatcher.utter_message(qa.make_question_with_query(self.text))
+        
+    def do_bot_write_a_feedback(self):
+        self.dispatcher.utter_message("Oké! A lenti chatboxban megírhatod a véleményed. :)")
+        
+    def do_bot_cancel_feedback(self):
+        self.dispatcher.utter_message(
+            template="utter_question",
+        )
+        
+    def do_bot_send_feedback(self):
+        
+        # date = datetime.now()
+        
+        # data = json.dumps({
+        #     "user_id": '_' + random.randint(0,9999),
+        #     "description": text,
+        #     "createdAt": date,
+        # })
+        # url = "https://chatbot-rgai3.inf.u-szeged.hu/mongo"
+        # url = "http://localhost:5000/qa/api/"
+
+        # requests.post(url=url,json=data)
+        self.dispatcher.utter_message("Köszönjük a visszajelzést! :)")
 
     # def do_bot_suggest_range(self):
     #     next_free_bot_range = self.time_table.get_first_range_for_label(BOT_FREE_RANGE)

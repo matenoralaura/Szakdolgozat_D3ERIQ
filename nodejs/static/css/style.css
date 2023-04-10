@@ -1,5 +1,6 @@
 body {
 	font-family: 'Raleway', sans-serif;
+	background: linear-gradient(180deg, rgba(4,59,88,1) 0%, rgba(19,100,131,1) 75%, rgba(84,154,170,1) 100%);
 }
 
 
@@ -43,12 +44,22 @@ body {
 
 .chats {
 	/* display: none; */
-	height: 385px;
+	height: 820px;
 	padding: 2px;
 	border-radius: 1px;
 	overflow-y: scroll;
-	margin-top: 1px;
+	margin-top: 100px;
 	transition: 0.2s;
+}
+
+#button-igen {
+	position: relative;
+	left: 10px;
+}
+
+#button-megsem {
+	position: relative;
+	left: 20px;
 }
 
 div.chats::-webkit-scrollbar {
@@ -64,14 +75,14 @@ div.chats::-webkit-scrollbar {
 	margin-bottom: 2px;
 }
 
-.botAvatar {
+/* .botAvatar {
 	border-radius: 50%;
 	width: 1.5em;
 	height: 1.5em;
 	float: left;
 	margin-left: 5px;
-	/* border: 2px solid  #2c53af ; */
-}
+	border: 2px solid  #2c53af ;
+} */
 
 .botMsg {
 	float: left;
@@ -135,16 +146,18 @@ textarea-webkit-scrollbar {
 }
 
 .usrInput {
-	padding: 0.5em;
+	padding: 0;
 	width: 80%;
-	margin-left: 4%;
+	margin-left: 0;
+	margin-right: 300px;
 	border: 0;
-	padding-left: 15px;
+	padding-left: 0px;
 	height: 40px;
 }
 
 .keypad {
-	/* display: none;  */
+	display: flex;
+	/* justify-content: space-around;  */
 	background: white;
 	height: 50px;
 	position: absolute;
@@ -159,13 +172,33 @@ textarea-webkit-scrollbar {
 	width: 20px;
 	border-radius: 50%;
 	display: inline-block;
-	float: right;
-	margin-right: 30px;
+	/* float: right; */
+	margin-right: 20px;
 	text-align: center;
 	padding: 5px;
 	font-size: 20px;
 	cursor: pointer;
 	color: #2b2bab;
+}
+
+#micButton {
+	height: 20px;
+	width: 20px;
+	border-radius: 50%;
+	display: inline-block;
+	/* float: right; */
+	margin-right: 20px;
+	text-align: center;
+	padding: 5px;
+	font-size: 22px;
+	cursor: pointer;
+	color: #2b2bab;
+}
+
+#title {
+	/* justify-content:baseline;  */
+	position:absolute;
+	top:0;
 }
 
 .imgProfile {
@@ -337,6 +370,20 @@ textarea-webkit-scrollbar {
 
 .fa .fa-user-o {
 	font-size: 15px;
+}
+
+.fa-plus {
+	font-size: large;
+	float: left;
+	padding-top: 18px;
+	padding-left: 5px;
+}
+
+.fa-minus {
+	font-size: large;
+	float: left;
+	padding-top: 18px;
+	padding-left: 12px;
 }
 
 .stars-outer {

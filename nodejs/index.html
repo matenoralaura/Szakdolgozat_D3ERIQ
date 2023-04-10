@@ -33,7 +33,7 @@
     <link
       rel="stylesheet"
       type="text/css"
-      href="https://chatbot-rgai3.inf.u-szeged.hu/css/style.css"
+      href="/css/style.css"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
@@ -44,98 +44,33 @@
       <div id="modal1" class="modal">
         <canvas id="modal-chart"></canvas>
       </div>
+        <h2 id="title">Valami szöveg, amit majd megváltoztatok!</h2>
 
-      <div id="description">
-        <h2 id="cim">Próbáld ki a chat alapú időpont foglalást!</h2>
-
-        <p>
-          A jobb oldali demóban kipróbálhatod, hogy milyen egy virtuális
-          asszisztensnél időpontot foglalni magyar nyelvű beszélgetéssel. A
-          demóban egy elfoglalt vezetőhöz szeretnél egy egy órás időpontot. A
-          beszélgetés indítása gomb megnyomásával indul a chat a vezető
-          virtuális asszisztensével, akivel egyeztetni tudod, hogy mikorra
-          találtok neki is és neked is megfelelő időpontot. Mint ahogy a legtöbb
-          ügyfélszolgálaton, a beszélgetést rögzítjük és bizalmasan kezeljük.
-        </p>
-
-        <h4 id="visszajelzes">VÉLEMÉNY?</h4>
-
-        <p>
-          A technológia demonstrációs és fejlesztési célokat szolgál, nem
-          történik valós időpont foglalás. Mivel a demót kiszolgáló technológiát
-          folyamatosan fejlesztjük, sokat jelentenek a visszajelzések. Ha öt
-          kattintással vissza tudsz jelezni, hogy milyen volt szerinted a
-          beszélgetés élmény, azzal sokat adhatsz a rendszer javításához.
-        </p>
-
-        <p>
-          <a href="https://forms.gle/YhRh9M2wurN6qx67A"
-            ><img
-              src="https://chatbot-rgai3.inf.u-szeged.hu/img/outline_rate_review_black_24dp.png"
-          /></a>
-          <br />Vagy ha a konkrét beszélgetéssel kapcsolatban van
-          visszajelzésed, itt is megírhatod:
-        </p>
-        <input type="text" id="feedback" placeholder="Visszajelzés" />
-        <button id="feedback-btn">Küldés</button> <label id="result"></label>
-        <h4 id="kapcsolatfelvetel">KAPCSOLAT</h4>
-
-        <p>
-          Az itt bemutatott technológia a
-          <a href="https://mi.nemzetilabor.hu/"
-            >Mesterséges Intelligencia Nemzeti Laboratórium</a
-          >
-          keretében, a Szegedi Tudományegyetemen jött létre, hogy bemutassa a
-          nyelvtechnológia jelenleg elérhető szintjét. Ha szeretnél
-          együttműködni a kutatókkal, vagy szervezeti célokra használnád az itt
-          bemutatott technológiát (pl. időpontegyeztető dialógus motor vagy
-          magyar nyelvű időpontra vonatkozó szöveges kifejezések feldolgozása),
-          akkor vedd fel velünk a kapcsolatot:
-        </p>
-
-        <p>
-          <a href="mailto:rfarkas@inf.u-szeged.hu"
-            ><img
-              src="https://chatbot-rgai3.inf.u-szeged.hu/img/outline_alternate_email_black_24dp.png"
-          /></a>
-        </p>
-          <h4>Hangalapú</h4>
-          <!-- <p>Proxy Kapcsolodas:</p>
-          <button
-            onclick="connect('wss:\/\/chatbot-rgai3.inf.u-szeged.hu/socket')"
-          > -->
-            <!-- Kapcsolodas -->
-          <!-- </button> -->
-          Big button for magic
-          <button onclick="connect('wss:\/\/chatbot-rgai3.inf.u-szeged.hu/socket');getModels();bindAsrChannel('general_hu')">Lekerdezes</button><label id="stt-connect"></label><br /><br />
-          <!-- Kapcsolodas felismerohoz:
-            <button onclick="bindAsrChannel('general_hu')">ASR Kapcsolodos</button
-              ><label id="stt-connect"></label><br /><br /> -->
-          Diktalas:
-          <button onclick="startDictate()">Inditas</button>
-          <button onclick="stopDictate()">Megallitas</button><label id="recording"></label><br /><br />
-          Disconnect:
-          <button onclick="disconnect()">Bontas</button><label id="proxy-connect"></label><br /><br />
-        
+        <!-- <p>Proxy Kapcsolodas:</p> -->
+          
+          <!-- <button onclick="disconnect()">Bontas</button><label id="proxy-connect"></label><br /><br /> -->
+          <!-- Diktalas: -->
+          <!-- <button onclick="startDictate()">Inditas</button> -->
+          <!-- <button onclick="stopDictate()">Megallitas</button><label id="recording"></label><br /><br />       -->
         </div>
       </div>
 
       <!--chatbot widget -->
-      <div class="widget">
-        <div class="chat_header">
+      <div>
+        <div>
           <!--Add the name of the bot here -->
-          <span class="chat_header_title">Időpont Bot</span>
-          <span class="dropdown-trigger" href="#" data-target="dropdown1">
-            <i class="material-icons"> more_vert </i>
-          </span>
+          <!-- <span class="chat_header_title">Időpont Bot</span> -->
+          <!-- <span class="dropdown-trigger" href="#" data-target="dropdown1"> -->
+            <!-- <i class="material-icons"> more_vert </i> -->
+          <!-- </span> -->
 
-          <!-- Dropdown menu-->
+          <!-- Dropdown menu
           <ul id="dropdown1" class="dropdown-content">
             <li><a href="#" id="clear">Clear</a></li>
             <li><a href="#" id="restart">Restart</a></li>
             <li><a href="#" id="close">Close</a></li>
           </ul>
-        </div>
+        </div> -->
 
         <!--Chatbot contents goes here -->
         <div class="chats" id="chats">
@@ -148,18 +83,31 @@
             id="userInput"
             placeholder="Type a message..."
             class="usrInput"
+            name="query"
+            value="{{query if query else ''}}"
           ></textarea>
           <div id="sendButton">
             <i class="fa fa-paper-plane" aria-hidden="true"></i>
           </div>
+          <div id="micButton" onclick="changeIcon(this)">
+            <i class="fa fa-microphone" aria-hidden="true"></i>
+            <!-- <span>Mic on</span> -->
+          </div>
+          <!-- <button
+            onclick="oneClickVoiceRecording()"
+          >
+            ~Magic~
+          </button><label id="stt-connect"></label><br /><br /> -->
         </div>
       </div>
 
       <!--bot profile-->
-      <div class="profile_div" id="profile_div">
+      <!-- <div class="profile_div" id="profile_div">
         <img class="imgProfile" src="img/botAvatar.png" />
-      </div>
+      </div> -->
     </div>
+
+    <!-- asdasd -->
 
     <!--JavaScript at end of body for optimized loading-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

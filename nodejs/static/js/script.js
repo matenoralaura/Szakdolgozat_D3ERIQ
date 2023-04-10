@@ -81,12 +81,13 @@ function action_trigger() {
   setTimeout(function () {
     hideBotTyping();
     msg =
-      'fekete bikapata kopog a patika pepita kövein';
+      'Üdv! Miben segíthetek?';
     var BotResponse =
-      '<img class="botAvatar" src="https://chatbot-rgai3.inf.u-szeged.hu/img/botAvatar.png"/><p class="botMsg">' +
+      '<p class="botMsg">' +
       msg +
       '</p><div class="clearfix"></div>';
     $(BotResponse).appendTo('.chats').hide().fadeIn(1000);
+    // icon.classList.toggle('fa-plus');
     scrollToBottomOfResults();
   }, 500);
   //tts(msg);
@@ -124,6 +125,11 @@ $('.usrInput').on('keyup keypress', function (e) {
       return false;
     }
   }
+});
+
+//-------------------voice recording with icon---------------------
+$('#micButton').on('click', function (e) {
+  oneClickVoiceRecording();
 });
 
 $('#sendButton').on('click', function (e) {
@@ -175,9 +181,7 @@ $.fn.selectRange = function (start, end) {
 //==================================== Set user response =====================================
 function setUserResponse(message) {
   var UserResponse =
-    '<img class="userAvatar" src=' +
-    'https://chatbot-rgai3.inf.u-szeged.hu/img/userAvatar.jpg' +
-    '><p class="userMsg">' +
+    '<p class="userMsg">' +
     message.trim() +
     ' </p><div class="clearfix"></div>';
   $(UserResponse).appendTo('.chats').show('slow');
@@ -208,7 +212,7 @@ function waitForSocketConnection(socket, callback){
               waitForSocketConnection(socket, callback);
           }
 
-      }, 5); // wait 5 milisecond for the connection...
+      }, 50); // wait 5 milisecond for the connection...
 }
 
 //============== send the user message to rasa server =============================================
@@ -236,7 +240,7 @@ function send(message) {
         // $("#userInput").prop('disabled', false);
         //if you want the bot to start the conversation after the restart action.
         // action_trigger();
-        // return;
+        return;
       }
       //console.log("url =" + document.location.protocol + " asd " + document.location.hostname);
       // if there is no response from rasa server
@@ -253,13 +257,13 @@ function setBotResponse(response) {
     hideBotTyping();
     if (response.length < 1) {
       //if there is no response from Rasa, send  fallback message to the user
-      // var fallbackMsg = 'I am facing some issues, please try again later!!!';
-      // var BotResponse =
-      //   '<img class="botAvatar" src="https://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' +
-      //   fallbackMsg +
-      //   '</p><div class="clearfix"></div>';
-      // $(BotResponse).appendTo('.chats').hide().fadeIn(1000);
-      // scrollToBottomOfResults();
+      var fallbackMsg = 'I am facing some issues, please try again later!!!';
+      var BotResponse =
+        /*'<img class="botAvatar" src="https://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/>*/'<p class="botMsg">' +
+        fallbackMsg +
+        '</p><div class="clearfix"></div>';
+      $(BotResponse).appendTo('.chats').hide().fadeIn(1000);
+      scrollToBottomOfResults();
     } else {
       //if we get response from Rasa
       const res = [];
@@ -267,11 +271,32 @@ function setBotResponse(response) {
         //check if the response contains "text"
         if (response[i].hasOwnProperty('text')) {
           var BotResponse =
-            '<img class="botAvatar" src="https://chatbot-rgai3.inf.u-szeged.hu/img/botAvatar.png"/><p class="botMsg">' +
+            '<p class="botMsg">' +
             response[i].text +
-            '</p><div class="clearfix"></div>';
+            '</p>' +
+            ((response[i].text == "Visszajelzést szeretne beküldeni?" || response[i].text == "Oké! A lenti chatboxban megírhatod a véleményed. :)") ? '' : '<i class="fa fa-plus" aria-hidden="true"></i><i class="fa fa-minus" onclick=send("vélemény") aria-hidden="true"></i>' ) +
+            '<div class="clearfix"></div>';
           $(BotResponse).appendTo('.chats').hide().fadeIn(1000);
+          if (response[i].text == "Visszajelzést szeretne beküldeni?"){
+            // console.log(response[i].text);
+            let btn = document.createElement("button");
+            btn.id = "button-igen"
+            btn.innerHTML = "Igen";
+            btn.onclick = function () {
+              setUserResponse("Igen");
+              send("Igen");
+            };
+            $(btn).appendTo('.chats').hide().fadeIn(1000);
 
+            let btn2 = document.createElement("button");
+            btn2.id = "button-megsem"
+            btn2.innerHTML = "Mégsem";
+            btn2.onclick = function () {
+              setUserResponse("Mégsem");
+              send("Mégsem");
+            };
+            $(btn2).appendTo('.chats').hide().fadeIn(1000);
+          }
           res.push(response[i].text);
         }
       }
@@ -569,7 +594,7 @@ function handleLocationAccessError(error) {
 //======================================bot typing animation ======================================
 function showBotTyping() {
   var botTyping =
-    '<img class="botAvatar" id="botAvatar" src="https://chatbot-rgai3.inf.u-szeged.hu/img/botAvatar.png"/><div class="botTyping">' +
+    '<div class="botTyping">' +
     '<div class="bounce1"></div>' +
     '<div class="bounce2"></div>' +
     '<div class="bounce3"></div>' +
@@ -816,7 +841,7 @@ function SpeechtexAsrHandler() {
   this.resultReceived = function (msg) {
     //Modify this
     const extracted_text = extract_text(msg.params);
-    if (msg.msg === '0' && extracted_text.length < 2) {    
+    if (msg.msg === '0') {    
       document.getElementById('userInput').value = extracted_text;
     } else {
       if (extracted_text === '' || extracted_text.length < 2) return;
@@ -846,6 +871,39 @@ function SpeechtexMessage(raw_msg) {
       this.msg = raw_msg.substring(raw_msg.indexOf('|') + 1);
     }
   }
+}
+
+/*
+Voice recording functions in one
+*/
+let clickNumber = 1;
+function oneClickVoiceRecording(){
+  if (clickNumber === 1){
+    connect('wss:\/\/chatbot-rgai3.inf.u-szeged.hu/socket');
+    getModels();
+    bindAsrChannel('general_hu');
+    clickNumber = 2;
+  }
+  else if (clickNumber === 2){
+    stopDictate();
+    disconnect();
+    let sendbutton= document.getElementById("sendButton");
+    sendbutton.click();
+    clickNumber = 1;
+  }
+}
+
+/*
+Change icon
+*/
+// let startIcon = "fa fa-microphone";
+// let stopIcon = "fa fa-microphone-slash";
+function changeIcon(anchor) {
+  var icon = anchor.querySelector("i");
+  icon.classList.toggle('fa-microphone');
+  icon.classList.toggle('fa-microphone-slash');
+
+  // anchor.querySelector("span").textContent = icon.classList.contains('fa fa-microphone') ? "Mic on" : "Mute";
 }
 
 /*
@@ -880,20 +938,23 @@ function SpeechtexAsrConnection(wsProxyUrl) {
   const lab = document.getElementById('stt-connect');
   this.connect = function () {
     ws = new WebSocket(wsProxyUrl);
-    ws.onopen = () => {
-      document.getElementById('proxy-connect').innerText =
-        ' Sikeres proxy kapcsolódás!';
-    };
-    ws.onerror = () => {
-      document.getElementById('proxy-connect').innerText = ' Websocket hiba!';
-    };
+    // ws.onopen = () => {
+      // document.getElementById('proxy-connect').innerText =
+        // ' Sikeres proxy kapcsolódás!';
+    // };
+    // ws.onerror = () => {
+      // document.getElementById('proxy-connect').innerText = ' Websocket hiba!';
+    // };
 
     this.init();
     ws.onmessage = function (e) {
       var msg = e.data;
-      console.log(msg);
+      console.log(msg, "ez a message");
       // Sikeres ASR kapcsolodas
-      if (msg == MSG_IN_BIND_OK) asrBindOk = true;
+      if (msg == MSG_IN_BIND_OK){
+        asrBindOk = true;
+        startDictate();
+      }
       // loopback id beallitasa
       else if (msg.indexOf(MSG_IN_LOOPBACK_ID) > -1) {
         loopbackId = msg.substring(msg.indexOf(';') + 1);
@@ -902,6 +963,7 @@ function SpeechtexAsrConnection(wsProxyUrl) {
       else if (msg.indexOf(MSG_IN_LOOPBACK_STATUS) > -1) {
         var status = parseInt(msg.substring(msg.lastIndexOf(';') + 1));
         if (status != 0) {
+          // console.log("valami valami");
           clearInterval(statusInterval);
           statusInterval = undefined;
         }
@@ -981,15 +1043,15 @@ function SpeechtexAsrConnection(wsProxyUrl) {
   this.disconnect = function () {
     if (!(ws == null)) {
       ws.close();
-      document.getElementById('proxy-connect').innerText =
-        ' Sikeres proxy bontás!';
-    } else {
-      document.getElementById('proxy-connect').innerText =
-        ' Nem volt a proxyhoz kapcsolódva!';
-    }
+      // document.getElementById('proxy-connect').innerText =
+        // ' Sikeres proxy bontás!';
+    } /*else {
+      // document.getElementById('proxy-connect').innerText =
+        // ' Nem volt a proxyhoz kapcsolódva!';
+    }*/
   };
   const sendControl = function (control) { //here
-    console.log("ws: ", ws);
+    // console.log("ws: ", ws);
     if (!(ws == null)){ //ws állapotát is figyelni
       if (ws.readyState == 1){
         ws.send(control); //itt el akarja küldeni a paramétereket
@@ -1001,6 +1063,8 @@ function SpeechtexAsrConnection(wsProxyUrl) {
       }
     }
     else propagate('error|001;No connection to Speechtex ASR Proxy.');
+    // if (!(ws == null)) ws.send(control);
+    // else propagate('error|001;No connection to Speechtex ASR Proxy.');
   };
   const sendAudioData = function (data) {
     if (!data) return -1;
@@ -1015,7 +1079,7 @@ function SpeechtexAsrConnection(wsProxyUrl) {
   /*
   Csatlakozas adott modellt futtato felismero csatornahoz
   */
-  this.bindAsrChannel = function (model) {
+  this.bindAsrChannel = function (model) { //one
     fromWhere = 'connect';
     sendControl(MSG_OUT_GET_MODELS);
     sendControl(MSG_OUT_DISCONNECT);
@@ -1032,16 +1096,16 @@ function SpeechtexAsrConnection(wsProxyUrl) {
     sendControl(
       MSG_OUT_RECOG_START + ';' + sampleRate + ';' + loopbackId + ';0;'
     );
-    console.log('asd');
-    document.getElementById('recording').innerText =
-      ' Hangfelismerés folyamatban.';
+    // console.log('asd');
+    // document.getElementById('recording').innerText =
+      // ' Hangfelismerés folyamatban.';
 
     recording = true;
   };
   this.stopRecognition = function () {
     sendControl(MSG_OUT_RECOG_STOP + ';');
-    document.getElementById('recording').innerText =
-      ' Hangfelismerés leállítva.';
+    // document.getElementById('recording').innerText =
+      // ' Hangfelismerés leállítva.';
     recording = false;
   };
   this.generateLoopback = function (dic) {
@@ -1097,6 +1161,7 @@ function disconnect() {
 }
 function bindAsrChannel(model) {
   spAsrConn.bindAsrChannel(model);
+  // console.log("spAsrCo");
 }
 function startDictate() {
   spAsrConn.startRecognition();

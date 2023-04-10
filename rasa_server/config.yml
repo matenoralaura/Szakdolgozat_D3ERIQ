@@ -1,4 +1,5 @@
-language: hu
+language: "hu_core_news_lg"
+#ToDo: hu_core_ud_lg-ral kiprobalni
 
 pipeline:
   - name: services.delete_special_chars.DeleteSpecialChars
@@ -6,6 +7,8 @@ pipeline:
   - name: SpacyTokenizer
   - name: SpacyFeaturizer
   - name: CountVectorsFeaturizer
+    OOV_token: oov
+    token_pattern: (?u)\b\w+\b
   - name: DIETClassifier
     epochs: 50
     entity_recognition: False

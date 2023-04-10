@@ -35,7 +35,7 @@ router.post('/rasa/webhook', (req, res) => {
     };
     console.log(data);
     axios
-      .post('http://rasa_server:5005/webhooks/rest/webhook', data, {
+      .post('http://localhost:5005/webhooks/rest/webhook', data, {
         headers: {
           'Content-Type': 'application/json'
         }

@@ -54,24 +54,109 @@ RESPONSES = load_responses()
 #         """
 #         return [SlotSet('time_table', None)]
     
-class ActionSearchWiki(Action):
+# class ActionSearchWiki(Action):
+
+#     def name(self) -> Text:
+#         return "action_search_wiki"
+    
+#     # print("valami")
+
+#     def run(self, dispatcher: CollectingDispatcher,
+#             tracker: Tracker,
+#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+#         # time_table = get_timetable_in_discussion(tracker, dispatcher)
+#         # rule_blocks = RuleBlocks()
+#         action_blocks = ActionBlocks(tracker, dispatcher)
+#         # print("wiki search")
+    
+#         action_blocks.do_bot_search_on_wiki()
+
+#         return []
+    
+class ActionQuestion(Action):
 
     def name(self) -> Text:
-        return "action_search_wiki"
+        return "action_question"
+    
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        action_blocks = ActionBlocks(tracker, dispatcher)
+    
+        action_blocks.do_bot_question()
+
+        return []
+    
+class ActionWriteFeedback(Action):
+
+    def name(self) -> Text:
+        return "action_write_feedback"
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
-        # time_table = get_timetable_in_discussion(tracker, dispatcher)
-        # rule_blocks = RuleBlocks()
         action_blocks = ActionBlocks(tracker, dispatcher)
-        # print("wiki search")
     
-        action_blocks.do_bot_search_on_wiki()
+        action_blocks.do_bot_ask_for_review()
+        
 
         return []
+    
+class ActionActuallyWriteFeedback(Action):
 
+    def name(self) -> Text:
+        return "action_feedback"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        action_blocks = ActionBlocks(tracker, dispatcher)
+    
+        action_blocks.do_bot_write_a_feedback()
+
+        return []
+    
+class ActionCancelFeedback(Action):
+
+    def name(self) -> Text:
+        return "action_cancel_feedback"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        action_blocks = ActionBlocks(tracker, dispatcher)
+    
+        action_blocks.do_bot_cancel_feedback()
+
+        return []
+    
+class ActionSendFeedback(Action):
+
+    def name(self) -> Text:
+        return "action_send_feedback"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        action_blocks = ActionBlocks(tracker, dispatcher)
+    
+        # print(tracker.get_slot('feedback_response'))
+    
+        # action_blocks.do_bot_send_feedback(tracker.get_slot('feedback_response'))
+
+        valasz = tracker.latest_message["text"]
+        
+        print(valasz + "cicacicaiiaciciaicaic")
+        
+        action_blocks.do_bot_send_feedback()
+
+        return []
 
 # class ActionRecommendOtherDate(Action):
 #     def name(self) -> Text:

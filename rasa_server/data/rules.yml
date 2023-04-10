@@ -1,49 +1,94 @@
 version: "2.0"
 
+policies:
+- name: RulePolicy
+
+# slots:
+#   velemeny:
+#     type: text
+#     mappings:
+#     - type: from_text
+#       conditions:
+#       - active_loop: velemeny_form
+#         requested_slot: velemeny
+
+# forms:
+#   velemeny_form:
+#     ignored_intents: 
+#     # - wiki
+#     - visszajelzes
+#     - question
+#     - feedback
+#     - cancel_feedback
+#     required_slots:
+#         - velemeny
+
 rules:
-  # - rule: fallback
+  # - rule: wiki rule
   #   steps:
-  #     - intent: nlu_fallback
-  #     - action: utter_rephrase
+  #   - intent: wiki
+  #   - action: action_search_wiki
 
-  # - rule: Hi rule
-  #   conversation_start: true
-  #   steps:
-  #       - intent: udvozol
-  #       - action: utter_udvozol
-
-  # - rule: Single rule
-  #   steps:
-  #     - intent: idopontfoglalas
-  #     - action: action_fill_table
-
-  - rule: wiki rule
+  - rule: visszajelzes rule
     steps:
-      # - intent: wiki
-      - action: action_search_wiki
+    - intent: visszajelzes
+    - action: action_write_feedback
 
-  # - rule: user_affirmed
-  #   steps:
-  #     - intent: affirm
-  #     - action: action_user_affirmed
+  - rule: question rule
+    steps:
+    - intent: question
+    - action: action_question
+    
+  - rule: activate feedback rule
+    steps:
+    - intent: feedback
+    - action: action_feedback
+    - action: action_listen
+    - action: action_send_feedback
+    # - action: add_to_system_form
+    # - active_loop: add_to_system_form
 
-  # - rule: user_is_flexible
+  # - rule: submit feedback rule
+  #   condition:
+  #   - active_loop: add_to_system_form
   #   steps:
-  #     - intent: recommend_date_or_time
-  #     - action: action_recommend_appointment
+  #   - action: add_to_system_form
+  #   - active_loop: add_to_system_form
+  #   - active_loop: null
+  #   - slot_was_set:
+  #     - requested_slot: null
+  #   - action: action_send_feedback
+    
+    # - action: velemeny_form
+    # - active_loop: velemeny_form
 
-  # - rule: user_refuted # this could be refined
+  # - rule: Submit feedback
+  #   # condition:
+  #   # - active_loop: velemeny_form
   #   steps:
-  #     - intent: refute
-  #     - action: recommend_other_date
+  #   # - action: velemeny_form
+  #   # - active_loop: null
+  #   # - slot_was_set:
+  #     # - requested_slot: null
 
-  # - rule: mas idopont
-  #   steps:
-  #     - intent: another_appointment
-  #     - action: recommend_other_date
+  - rule: cancel feedback rule
+    steps:
+    - intent: cancel_feedback
+    - action: action_cancel_feedback
 
-  # - rule: viszlat
-  #   steps:
-  #     - intent: vege
-  #     - action: action_remove_appointment
-  #     - action: utter_bye
+stories:
+- story: feedback story
+  steps:
+  - intent: visszajelzes
+  - action: action_write_feedback
+  - intent: feedback
+  - action: action_feedback
+  # - action: action_listen
+  - action: action_send_feedback
+
+# stories:
+# - story: collect restaurant booking info  # name of the story - just for debugging
+#   steps:
+#   - intent: greet                         # user message with no entities
+#   - action: utter_ask_howcanhelp
+#   - intent: inform

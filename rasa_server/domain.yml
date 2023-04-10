@@ -7,33 +7,42 @@ session_config:
   carry_over_slots_to_new_session: true
 
 intents:
-  # - idopontfoglalas
-  # - another_appointment
-  # - udvozol
-  # - vege
-  # - affirm
-  # - refute
-  # - recommend_date_or_time
-  - wiki
+# - wiki
+- visszajelzes
+- question
+- feedback
+- cancel_feedback
 
-# slots:
-#   time_table:
-#     type: any
+entities:
+- feedback_response
+
+slots:
+  feedback_response:
+    type: text
+    influence_conversation: false
 
 responses:
-  # utter_udvozol:
-  # - text: Szia! Miben segíthetek?
-  # utter_bye:
-  #   - text: Viszlát!
-  # utter_rephrase:
-  #   - text: Elnézést, nem teljesen értettem. Át tudnád fogalmazni?
-  utter_wiki:
-    - text: Wikipédián szeretne keresni?
-  utter_velemeny:
-    - text: A véleményét szeretné beküldeni?
+  # utter_wiki:
+  #   - text: Wikipédián szeretne keresni?
+  utter_visszajelzes:
+    - text: Visszajelzést szeretne beküldeni?
+  utter_question:
+    - text: Rendben, ezesetben felteheted a kérdésed!
 
 actions:
-  - action_search_wiki
+  - '...'
+  # - action_search_wiki
+  - action_write_feedback
+  - action_question
+  - action_feedback
+  - action_cancel_feedback
+  - action_send_feedback
+  - velemeny_form
 
-forms: {}
+forms:
+  add_to_system_form:
+    feedback_response:
+    - entity: feedback_response
+      type: from_entity
+
 e2e_actions: []
