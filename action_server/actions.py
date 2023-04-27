@@ -1,78 +1,42 @@
 from typing import Any, Text, Dict, List
-
-from rasa_sdk import Action, Tracker
+from rasa_sdk import Action, Tracker, FormValidationAction
 from rasa_sdk.events import FollowupAction
 from rasa_sdk.executor import CollectingDispatcher
-from rasa_sdk.events import SlotSet
-
+from rasa_sdk.types import DomainDict
 from utils import load_responses
-from action_blocks import ActionBlocks, RuleBlocks
+from action_blocks import ActionBlocks
 
 RESPONSES = load_responses()
 
-# class ActionGetWikiData(Action):
-# 	def name(self) -> Text:
-# 		return "action_get_wiki_data"
+class ValidateUserFeedbackForm(FormValidationAction):
+    def name(self) -> Text:
+        return "validate_userfeedback_form"
 
-# 	def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-# 		session = Session()
-
-# 		try:
-# 			search = tracker.get_slot("objeto_pesquisa")
-
-# 			p = {
-# 				"action": "query",
-# 				"format": "json",
-# 				"list": "search",
-# 				"srsearch": search,
-# 			}
-
-# 			req  = session.get(url = 'https://pt.wikipedia.org/w/api.php', params = p)
-# 			data = req.json()
-
-# 			if data["query"]["search"][0]["title"] != "":
-# 				raw = re.sub(re.compile("<.*?>"), "", data["query"]["search"][0]["snippet"]) 
-# 				dispatcher.utter_message(raw)
-# 			else:
-# 				dispatcher.utter_message("Não deu")
-# 		except Exception as err:
-# 			print (err)
-      
-# 		return []
-
-# class ActionRemoveAppointment(Action):
-
-#     def name(self) -> Text:
-#         return "action_remove_appointment"
-
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-#         print("torles")
-#         """
-#         Removes the appointment, clearing the slot
-#         """
-#         return [SlotSet('time_table', None)]
-    
-# class ActionSearchWiki(Action):
-
-#     def name(self) -> Text:
-#         return "action_search_wiki"
-    
-#     # print("valami")
-
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+    def validate_userfeedback(
+        self,
+        slot_value: Any,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: DomainDict,
+    ) -> Dict[Text, Any]:
+        """Validate `userfeedback` value."""
         
-#         # time_table = get_timetable_in_discussion(tracker, dispatcher)
-#         # rule_blocks = RuleBlocks()
-#         action_blocks = ActionBlocks(tracker, dispatcher)
-#         # print("wiki search")
+        return {"userfeedback": slot_value}
     
-#         action_blocks.do_bot_search_on_wiki()
+# class ValidateYesOrCancelForm(FormValidationAction):
+#     def name(self) -> Text:
+#         return "validate_yes_or_cancel_form"
 
-#         return []
+#     def validate_yes_or_cancel(
+#         self,
+#         slot_value: Any,
+#         dispatcher: CollectingDispatcher,
+#         tracker: Tracker,
+#         domain: DomainDict,
+#     ) -> Dict[Text, Any]:
+#         """Validate `yes_or_cancel` value."""
+        
+#         return {"yes_or_cancel": slot_value}
     
 class ActionQuestion(Action):
 
@@ -81,11 +45,26 @@ class ActionQuestion(Action):
     
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+            domain: Dict[Text, Any]
+            )-> List[Dict[Text, Any]]:
         
         action_blocks = ActionBlocks(tracker, dispatcher)
     
         action_blocks.do_bot_question()
+
+        return []
+    
+class ActionBegin(Action):
+
+    def name(self) -> Text:
+        return "action_begin"
+    
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:        
+        action_blocks = ActionBlocks(tracker, dispatcher)
+    
+        action_blocks.do_bot_affirm()
 
         return []
     
@@ -96,7 +75,8 @@ class ActionWriteFeedback(Action):
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+            domain: Dict[Text, Any]
+            ) -> List[Dict[Text, Any]]:
         
         action_blocks = ActionBlocks(tracker, dispatcher)
     
@@ -112,13 +92,31 @@ class ActionActuallyWriteFeedback(Action):
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+            domain: Dict[Text, Any]
+            ) -> List[Dict[Text, Any]]:
         
-        action_blocks = ActionBlocks(tracker, dispatcher)
+            action_blocks = ActionBlocks(tracker, dispatcher)
+            
+            action_blocks.do_bot_write_a_feedback()
+            
+            return []
+        
+        # if tracker.get_slot('yes_or_cancel') == "Igen":
+        
+        #     action_blocks = ActionBlocks(tracker, dispatcher)
+            
+        #     action_blocks.do_bot_write_a_feedback()
+            
+        #     return []
+        
+        # elif tracker.get_slot('yes_or_cancel') == "Mégsem":
+            
+        #     action_blocks = ActionBlocks(tracker, dispatcher)
     
-        action_blocks.do_bot_write_a_feedback()
+        #     action_blocks.do_bot_cancel_feedback()
 
-        return []
+        #     return [FollowupAction("action_listen")]
+        
     
 class ActionCancelFeedback(Action):
 
@@ -127,14 +125,16 @@ class ActionCancelFeedback(Action):
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+            domain: Dict[Text, Any]
+            ) -> List[Dict[Text, Any]]:
         
         action_blocks = ActionBlocks(tracker, dispatcher)
-    
+        
         action_blocks.do_bot_cancel_feedback()
 
         return []
-    
+        
+        
 class ActionSendFeedback(Action):
 
     def name(self) -> Text:
@@ -142,176 +142,13 @@ class ActionSendFeedback(Action):
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+            domain: Dict[Text, Any]
+            ) -> List[Dict[Text, Any]]:
         
         action_blocks = ActionBlocks(tracker, dispatcher)
-    
-        # print(tracker.get_slot('feedback_response'))
-    
-        # action_blocks.do_bot_send_feedback(tracker.get_slot('feedback_response'))
-
-        valasz = tracker.latest_message["text"]
-        
-        print(valasz + "cicacicaiiaciciaicaic")
         
         action_blocks.do_bot_send_feedback()
-
+    
         return []
+        
 
-# class ActionRecommendOtherDate(Action):
-#     def name(self) -> Text:
-#         return "recommend_other_date"
-
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
-#         time_table = get_timetable_in_discussion(tracker)
-#         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
-#         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
-#         #the user wants another date (if doesnt mention specifically, the bot will recommend)
-
-#         if not rule_blocks.text_has_datetime():
-#             print("RO1")
-#             action_blocks.do_bot_suggest_alternative_range()
-#         elif rule_blocks.bot_is_free_in_overlap():
-#             print("RO2")
-#             action_blocks.do_bot_set_appointment()
-#         elif rule_blocks.text_in_currently_discussed_top_range():
-#             print("RO3")
-#             action_blocks.do_further_specify_currently_discussed()
-#         else:
-#             print("RO4")
-#             action_blocks.do_bot_handle_bad_range()
-
-#         time_table_modified = action_blocks.time_table
-#         return [SlotSet("time_table", time_table_modified.toJSON())]
-
-
-# class ActionTimeTableFiller(Action):
-
-#     def name(self) -> Text:
-#         return "action_fill_table"
-
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
-#         time_table = get_timetable_in_discussion(tracker)
-#         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
-#         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
-
-#         #user did not request a specific time, so bot suggests 
-#         if not rule_blocks.text_has_datetime():
-#             print("A")
-#             dispatcher.utter_message(get_random_response(RESPONSES, "accept_appointment_intent"))
-#             action_blocks.do_bot_suggest_range()
-
-#             return [SlotSet("time_table", time_table.toJSON())]
-
-#         currently_discussed_remains = False
-#         #a time frame is being discussed
-#         if rule_blocks.exists_currently_discussed_range():
-#             print("B")
-
-#             #the timeframe is getting smaller
-#             if rule_blocks.text_further_specifies_currently_discussed():
-#                 print("B1")
-#                 currently_discussed_remains = True
-#                 action_blocks.do_further_specify_currently_discussed()
-
-#                 return [SlotSet("time_table", time_table.toJSON())]
-#             elif rule_blocks.text_in_currently_discussed_top_range():
-#                 print("B2")
-#                 currently_discussed_remains = True
-#                 action_blocks.do_further_specify_currently_discussed()
-
-#                 return [SlotSet("time_table", time_table.toJSON())]
-
-#         #currently discussed range has changed, but it is good for the bot
-#         if not currently_discussed_remains and rule_blocks.bot_is_free_in_overlap():
-#             print("C2")
-#             action_blocks.do_bot_set_appointment()
-
-#         #currently discussed range has changed, but it is not good for the bot
-#         if not currently_discussed_remains and not rule_blocks.bot_is_free_in_overlap():
-#             print("C3")
-#             action_blocks.do_bot_handle_bad_range()
-
-#         time_table_modified = action_blocks.time_table
-#         # time_table_modified.get_viz()
-
-#         return [SlotSet("time_table", time_table_modified.toJSON())]
-
-
-# class ActionUserAffirmed(Action):
-
-#     def name(self) -> Text:
-#         return "action_user_affirmed"
-
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
-#         time_table = get_timetable_in_discussion(tracker)
-#         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
-#         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
-
-#         #user agreed that the the appointment will be good within the currently discussed range
-#         if rule_blocks.exists_currently_discussed_range():
-
-#             #bat didn't specify further
-#             if not rule_blocks.text_has_datetime():
-#                 print("K0")
-#                 if rule_blocks.currently_discussed_already_an_appointment():
-#                     print("K0-1")
-#                     action_blocks.do_confirm_currently_discussed_is_already_an_appointment()
-#                 else:
-#                     #bot suggests an appointment from the already mentioned interval
-#                     print("K0-2")
-#                     action_blocks.do_bot_suggest_from_currently_discussed_range()
-
-#                 return [SlotSet("time_table", time_table.toJSON())]
-#             elif rule_blocks.text_further_specifies_currently_discussed():
-#                 print("K1")
-#                 action_blocks.do_further_specify_currently_discussed()
-
-#                 return [SlotSet("time_table", time_table.toJSON())]
-#             elif rule_blocks.text_in_currently_discussed_top_range():
-#                 print("K2")
-#                 action_blocks.do_further_specify_currently_discussed()
-
-#                 return [SlotSet("time_table", time_table.toJSON())]   
-
-#         else:
-#             dispatcher.utter_message(get_random_response(RESPONSES, "not_understood"))
-
-#         time_table_modified = action_blocks.time_table
-#         # time_table_modified.get_viz()
-
-#         print("TERMINAL")
-#         return [SlotSet("time_table", time_table_modified.toJSON())]
-
-
-# class ActionRecommendAppointment(Action):
-
-#     def name(self) -> Text:
-#         return "action_recommend_appointment"
-
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
-#         time_table = get_timetable_in_discussion(tracker)
-#         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
-#         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
-
-#         #user is flexible, bot will recommend appointment
-
-#         if not rule_blocks.text_has_datetime():
-#             print("R1")
-#             action_blocks.do_bot_suggest_range()
-#             return [SlotSet("time_table", time_table.toJSON())]
-#         else:
-#             print("R2")
-#             return [SlotSet("time_table", time_table.toJSON()), FollowupAction("action_user_affirmed")]

@@ -1,23 +1,29 @@
 version: "2.0"
 
 nlu:
-  # - intent: wiki
-  #   examples: |
-  #     - wikipédia
-  #     - wiki
-  #     - keress rá
-  #     - érdekel
-  #     - wikipédián
-
-  - intent: visszajelzes
+  - intent: give-feedback
     examples: |
-      - szerintem
-      - véleményem
-      - véleményt
+      - le szeretném írni a véleményem
+      - véleményt szeretnék írni
       - vélemény
-      - visszajelzés
-      - jobb lenne
-      - jó lenne
+      - visszajelzést szeretnék adni
+      - szeretnék visszajelzést írni
+      - visszajelzést szeretnék írni
+      - szeretnék véleményt mondani
+      - szeretnék véleményt írni
+      - visszajelzést írnék
+      - véleményt szeretnék beküldeni
+      - véleményt szeretnék küldeni
+      - nem tetszik
+
+  - intent: begin
+    examples: |
+      - lehetne egy kérdésem?
+      - lenne egy kérdésem.
+      - kérdezhetek valamit?
+      - feltehetek egy kérdést?
+      - tudnál válaszolni egy kérdésre?
+      - lehet egy kérdésem?
 
   - intent: question
     examples: |
@@ -50,3 +56,15 @@ nlu:
   - intent: cancel_feedback
     examples: |
       - Mégsem
+
+  - intent: user_feedback
+    examples: |
+      - [jobb lenne, ha minden kérdésre jó választ adna](userfeedback)
+      - [jó lenne, ha nem kék lenne az oldal](userfeedback)
+      - [szerintem több kérdésre kéne válaszolnia a botnak](userfeedback)
+      - [úgy gondolom, tökéletes választ kaptam a kérdésemre](userfeedback)
+      - [ez a válasz nem tetszik nekem](userfeedback)
+      - [ez a válasz szerintem nem helyes](userfeedback)
+      - [nem hiszem, hogy ez a válasz helyes.](userfeedback)
+      - [jó választ kaptam](userfeedback)
+      - [helyes választ kaptam a kérdésemre](userfeedback)

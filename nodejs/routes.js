@@ -27,7 +27,6 @@ router.post('/mongo', (req, res, next) => {
 });
 
 router.post('/rasa/webhook', (req, res) => {
-  //TODO guard clause
   if (req.body.message && req.body.sender) {
     data = {
       message: req.body.message,

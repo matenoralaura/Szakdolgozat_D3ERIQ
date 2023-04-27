@@ -50,12 +50,17 @@ body {
 	overflow-y: scroll;
 	margin-top: 100px;
 	transition: 0.2s;
+	position: static;
 }
 
 #button-igen {
 	position: relative;
 	left: 10px;
 }
+
+/* #button-igen:focus {
+    background-color:#443db1;
+} */
 
 #button-megsem {
 	position: relative;
@@ -73,16 +78,8 @@ div.chats::-webkit-scrollbar {
 .clearfix {
 	margin-top: 2px;
 	margin-bottom: 2px;
+	/* position: relative; */
 }
-
-/* .botAvatar {
-	border-radius: 50%;
-	width: 1.5em;
-	height: 1.5em;
-	float: left;
-	margin-left: 5px;
-	border: 2px solid  #2c53af ;
-} */
 
 .botMsg {
 	float: left;
@@ -142,14 +139,13 @@ textarea-webkit-scrollbar {
 	height: 1.5em;
 	float: right;
 	margin-right: 5px;
-	/* border: 2px solid  #2c53af ; */
 }
 
 .usrInput {
 	padding: 0;
 	width: 80%;
 	margin-left: 0;
-	margin-right: 300px;
+	margin-right: 15vw;
 	border: 0;
 	padding-left: 0px;
 	height: 40px;
@@ -157,7 +153,6 @@ textarea-webkit-scrollbar {
 
 .keypad {
 	display: flex;
-	/* justify-content: space-around;  */
 	background: white;
 	height: 50px;
 	position: absolute;
@@ -172,7 +167,6 @@ textarea-webkit-scrollbar {
 	width: 20px;
 	border-radius: 50%;
 	display: inline-block;
-	/* float: right; */
 	margin-right: 20px;
 	text-align: center;
 	padding: 5px;
@@ -186,7 +180,6 @@ textarea-webkit-scrollbar {
 	width: 20px;
 	border-radius: 50%;
 	display: inline-block;
-	/* float: right; */
 	margin-right: 20px;
 	text-align: center;
 	padding: 5px;
@@ -196,10 +189,37 @@ textarea-webkit-scrollbar {
 }
 
 #title {
-	/* justify-content:baseline;  */
 	position:absolute;
 	top:0;
 }
+
+@media only screen and (max-width: 688px) {
+  #title {
+	  font-size: 25pt;
+	  margin: 0;
+	  padding-top: 15pt;
+	  top: 0;
+	  transition: all 0.3s ease-in-out;
+  }
+
+  .chats {
+	margin-top: 50px;
+	transition: all 0.3s ease-in-out;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+	#title {
+		visibility: hidden;
+		opacity: 0;
+		transition: visibility 0s 0.3s, opacity 0.3s linear;
+	}
+  
+	.chats {
+		margin-top: 25px;
+		transition: all 0.8s ease-in-out;
+	}
+  }
 
 .imgProfile {
 	box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.16), 0 0px 10px 0 rgba(0, 0, 0, 0.12);
@@ -210,7 +230,6 @@ textarea-webkit-scrollbar {
 }
 
 .profile_div {
-	/* display: none; */
 	position: fixed;
 	padding: 5px;
 	width: 10%;
@@ -222,7 +241,7 @@ textarea-webkit-scrollbar {
 
 /* css for dropdown menu of the bot */
 
-#close,
+/* #close,
 #restart,
 #clear {
 	cursor: pointer;
@@ -250,7 +269,7 @@ textarea-webkit-scrollbar {
 		opacity: 1;
 		transform: translate(0px, 0px);
 	}
-}
+} */
 
 
 /*========== css related to chats elements============= */
@@ -258,7 +277,7 @@ textarea-webkit-scrollbar {
 
 /* css for card details of carousel cards */
 
-.content {
+/* .content {
 	transition: 0.2s;
 	display: none;
 	width: 350px;
@@ -366,7 +385,7 @@ textarea-webkit-scrollbar {
 	width: 70%;
 	float: right;
 	margin-right: 25%;
-}
+} */
 
 .fa .fa-user-o {
 	font-size: 15px;
@@ -386,7 +405,7 @@ textarea-webkit-scrollbar {
 	padding-left: 12px;
 }
 
-.stars-outer {
+/* .stars-outer {
 	display: inline-block;
 	position: relative;
 	font-family: FontAwesome;
@@ -408,7 +427,7 @@ textarea-webkit-scrollbar {
 .stars-inner::before {
 	content: "\f005 \f005 \f005 \f005 \f005";
 	color: #f8ce0b;
-}
+} */
 
 div.content::-webkit-scrollbar {
 	width: 0 !important
@@ -417,162 +436,6 @@ div.content::-webkit-scrollbar {
 div.content_data::-webkit-scrollbar {
 	overflow-y: hidden;
 	width: 0px;
-	/* remove scrollbar space /
-    background: transparent;
-    / optional: just make scrollbar invisible */
-}
-
-
-/* css for single card */
-
-.singleCard {
-	padding-left: 10%;
-	padding-right: 10px;
-}
-
-
-/* css for image card */
-
-.imgcard {
-	object-fit: cover;
-	width: 80%;
-	height: 90%;
-	border-radius: 10px 10px 10px 10px;
-	margin-left: 1%;
-}
-
-
-/* css for suggestions buttons */
-
-.suggestions {
-	padding: 5px;
-	width: 80%;
-	border-radius: 10px;
-	background: #ffffff;
-	box-shadow: 2px 5px 5px 1px #dbdade;
-}
-
-.menuTitle {
-	padding: 5px;
-	margin-top: 5px;
-	margin-bottom: 5px;
-}
-
-.menu {
-	padding: 5px;
-}
-
-.menuChips {
-	display: block;
-	background: #2c53af;
-	color: #fff;
-	text-align: center;
-	padding: 5px;
-	margin-bottom: 5px;
-	cursor: pointer;
-	border-radius: 15px;
-	font-size: 14px;
-	word-wrap: break-word;
-}
-
-
-/* cards carousels */
-
-.cards {
-	display: none;
-	position: relative;
-	max-width: 300px;
-}
-
-.cards_scroller {
-	overflow-x: scroll;
-	overflow-y: hidden;
-	display: flex;
-	height: 210px;
-	width: 300px;
-	transition: width 0.5s ease;
-	margin-left: 5px;
-	/* Enable Safari touch scrolling physics which is needed for scroll snap */
-	-webkit-overflow-scrolling: touch;
-}
-
-.cards_scroller img {
-	border-radius: 10px;
-}
-
-.cards div.note {
-	position: absolute;
-	/* vertically align center */
-	top: 50%;
-	transform: translateY(-50%);
-	left: 0;
-	right: 0;
-	background: rgba(0, 0, 0, 0.6);
-	padding: 20px;
-	position: absolute;
-	font-size: 4em;
-	color: white;
-}
-
-.cards .arrow {
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	height: 30px;
-	width: 30px;
-	border-radius: 2px;
-	background-position: 50% 50%;
-	background-repeat: no-repeat;
-	z-index: 1;
-}
-
-.cards .arrow.next {
-	display: none;
-	font-size: 2em;
-	color: #ffffff;
-	right: 10px;
-}
-
-.cards .arrow.prev {
-	display: none;
-	font-size: 2em;
-	color: #ffffff;
-	left: 10px;
-}
-
-.cards_scroller::-webkit-scrollbar {
-	width: 0 !important
-}
-
-.cards_scroller>div.carousel_cards {
-	margin: 5px;
-	scroll-snap-align: center;
-	position: relative;
-	scroll-behavior: smooth;
-}
-
-.cards_scroller div.carousel_cards {
-	min-width: 50%;
-	min-height: 70%;
-	background: #b5b5b5;
-	border-radius: 10px;
-}
-
-@-webkit-keyframes fadeInLeft {
-	from {
-		opacity: 0;
-		-webkit-transform: translatex(-10px);
-		-moz-transform: translatex(-10px);
-		-o-transform: translatex(-10px);
-		transform: translatex(-10px);
-	}
-	to {
-		opacity: 1;
-		-webkit-transform: translatex(0);
-		-moz-transform: translatex(0);
-		-o-transform: translatex(0);
-		transform: translatex(0);
-	}
 }
 
 .in-left {
@@ -592,54 +455,8 @@ div.content_data::-webkit-scrollbar {
 	-moz-animation-delay: 0.8s;
 	-o-animation-duration: 0.8s;
 	animation-delay: 0.8s;
-}
+} */
 
-
-/* css for cards within the cards carousels */
-
-.cardBackgroundImage {
-	width: 100%;
-	border-radius: 5px;
-	height: 100%;
-	position: absolute;
-	object-fit: cover;
-}
-
-.cardFooter {
-	background: rgba(56, 53, 60, 0.86);
-	border-radius: 0px 0px 5px 5px;
-	position: absolute;
-	z-index: 3;
-	color: white;
-	bottom: 0;
-	width: 100%;
-	height: 30%;
-	word-wrap: break-word;
-	padding: 1px;
-}
-
-.cardTitle {
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	width: 90%;
-	height: 40%;
-	display: inline-block;
-	margin-bottom: 1px;
-	font-size: 15px;
-	/* font-weight: 600; */
-	padding: 5px;
-	/* color: #2c53af; */
-	color: #ffffff;
-	cursor: pointer;
-}
-
-.cardDescription {
-	padding: 5px;
-	font-size: 13px;
-	color: white;
-	line-height: 15px;
-}
 
 /*css for dropDown messages*/
 .dropDownMsg{

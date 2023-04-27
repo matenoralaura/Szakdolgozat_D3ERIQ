@@ -3,92 +3,41 @@ version: "2.0"
 policies:
 - name: RulePolicy
 
-# slots:
-#   velemeny:
-#     type: text
-#     mappings:
-#     - type: from_text
-#       conditions:
-#       - active_loop: velemeny_form
-#         requested_slot: velemeny
-
-# forms:
-#   velemeny_form:
-#     ignored_intents: 
-#     # - wiki
-#     - visszajelzes
-#     - question
-#     - feedback
-#     - cancel_feedback
-#     required_slots:
-#         - velemeny
-
 rules:
-  # - rule: wiki rule
-  #   steps:
-  #   - intent: wiki
-  #   - action: action_search_wiki
-
-  - rule: visszajelzes rule
-    steps:
-    - intent: visszajelzes
-    - action: action_write_feedback
-
   - rule: question rule
     steps:
     - intent: question
     - action: action_question
+
+  - rule: affirm rule
+    steps:
+    - intent: begin
+    - action: action_begin
+
+  - rule: give-feedback rule
+    steps:
+    - intent: give-feedback
+    - action: action_write_feedback
     
-  - rule: activate feedback rule
+  - rule: ask for feedback rule
     steps:
     - intent: feedback
     - action: action_feedback
-    - action: action_listen
+    - action: userfeedback_form
+    - active_loop: userfeedback_form
+
+  - rule: submit feedback rule
+    condition:
+    - active_loop: userfeedback_form
+    steps:
+    - action: userfeedback_form
+    - active_loop: null
+    - slot_was_set:
+      - requested_slot: null
     - action: action_send_feedback
-    # - action: add_to_system_form
-    # - active_loop: add_to_system_form
-
-  # - rule: submit feedback rule
-  #   condition:
-  #   - active_loop: add_to_system_form
-  #   steps:
-  #   - action: add_to_system_form
-  #   - active_loop: add_to_system_form
-  #   - active_loop: null
-  #   - slot_was_set:
-  #     - requested_slot: null
-  #   - action: action_send_feedback
-    
-    # - action: velemeny_form
-    # - active_loop: velemeny_form
-
-  # - rule: Submit feedback
-  #   # condition:
-  #   # - active_loop: velemeny_form
-  #   steps:
-  #   # - action: velemeny_form
-  #   # - active_loop: null
-  #   # - slot_was_set:
-  #     # - requested_slot: null
 
   - rule: cancel feedback rule
     steps:
     - intent: cancel_feedback
     - action: action_cancel_feedback
-
-stories:
-- story: feedback story
-  steps:
-  - intent: visszajelzes
-  - action: action_write_feedback
-  - intent: feedback
-  - action: action_feedback
-  # - action: action_listen
-  - action: action_send_feedback
-
-# stories:
-# - story: collect restaurant booking info  # name of the story - just for debugging
-#   steps:
-#   - intent: greet                         # user message with no entities
-#   - action: utter_ask_howcanhelp
-#   - intent: inform
+  

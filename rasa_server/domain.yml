@@ -1,48 +1,53 @@
 version: '2.0'
 
 config:
-  store_entities_as_slots: true
+  store_entities_as_slots: false
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
 
 intents:
-# - wiki
-- visszajelzes
+- give-feedback
 - question
+- begin
 - feedback
 - cancel_feedback
+- user_feedback
+- userfeedback_form
 
 entities:
-- feedback_response
+- userfeedback
 
 slots:
-  feedback_response:
+  userfeedback:
     type: text
-    influence_conversation: false
+    initial_value: null
+    auto_fill: true
+    influence_conversation: true
 
 responses:
-  # utter_wiki:
-  #   - text: Wikipédián szeretne keresni?
-  utter_visszajelzes:
-    - text: Visszajelzést szeretne beküldeni?
+  utter_feedback:
+    - text: Visszajelzést szeretnél beküldeni?
   utter_question:
     - text: Rendben, ezesetben felteheted a kérdésed!
+  utter_affirm:
+    - text: Kérdezz nyugodtan!
 
 actions:
   - '...'
-  # - action_search_wiki
   - action_write_feedback
   - action_question
   - action_feedback
+  - action_begin
   - action_cancel_feedback
   - action_send_feedback
-  - velemeny_form
+  - validate_userfeedback_form
 
 forms:
-  add_to_system_form:
-    feedback_response:
-    - entity: feedback_response
-      type: from_entity
+  userfeedback_form:
+    userfeedback:
+    - type: from_entity
+      entity: userfeedback
+    - type: from_text
 
 e2e_actions: []
