@@ -4,6 +4,8 @@ A felület lokális megtekintéséhez a következők a teendők a repository kó
 
 1. terminál:
 
+pip3 install rasa
+
 cd .\action_server
 
 rasa run actions
