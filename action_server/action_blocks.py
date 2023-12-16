@@ -1,7 +1,4 @@
-from utils import load_responses
 import qa as qa
-
-RESPONSES = load_responses()
 
 class RuleBlocks:
 

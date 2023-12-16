@@ -32,8 +32,6 @@ function sendResponseToDb(response) {
         text = $('.userMsg').last().text();
         date = new Date().toLocaleString();
 
-        console.log(text, "cica");
-
         $.ajax({
           url: 'https://chatbot-rgai3.inf.u-szeged.hu/mongo',
           type: 'POST',
@@ -82,7 +80,7 @@ $('.usrInput').on('keyup keypress', function (e) {
       e.preventDefault();
       return false;
     } else {
-      //destroy the existing chart, if yu are not using charts, then comment the below lines
+      //destroy the existing chart, if you are not using charts, then comment the below lines
       $('.collapsible').remove();
       if (typeof chatChart !== 'undefined') {
         chatChart.destroy();
@@ -136,25 +134,25 @@ $('#sendButton').on('click', function (e) {
     return false;
   }
 });
-$.fn.selectRange = function (start, end) {
-  if (end === undefined) {
-    end = start;
-  }
-  return this.each(function () {
-    if ('selectionStart' in this) {
-      this.selectionStart = start;
-      this.selectionEnd = end;
-    } else if (this.setSelectionRange) {
-      this.setSelectionRange(start, end);
-    } else if (this.createTextRange) {
-      var range = this.createTextRange();
-      range.collapse(true);
-      range.moveEnd('character', end);
-      range.moveStart('character', start);
-      range.select();
-    }
-  });
-};
+// $.fn.selectRange = function (start, end) {
+//   if (end === undefined) {
+//     end = start;
+//   }
+//   return this.each(function () {
+//     if ('selectionStart' in this) {
+//       this.selectionStart = start;
+//       this.selectionEnd = end;
+//     } else if (this.setSelectionRange) {
+//       this.setSelectionRange(start, end);
+//     } else if (this.createTextRange) {
+//       var range = this.createTextRange();
+//       range.collapse(true);
+//       range.moveEnd('character', end);
+//       range.moveStart('character', start);
+//       range.select();
+//     }
+//   });
+// };
 //==================================== Set user response =====================================
 function setUserResponse(message) {
   var UserResponse =
@@ -195,9 +193,10 @@ function waitForSocketConnection(socket, callback){
 //============== send the user message to rasa server =============================================
 function send(message) {
   $.ajax({
-    url: 'http://localhost:3000/rasa/webhook',
     type: 'POST',
+    url: 'http://localhost:3000/rasa/webhook',
     contentType: 'application/json',
+    dataType: "json",
     data: JSON.stringify({ message: message.trim(), sender: user_id }),
     success: function (botResponse, status) {
       console.log('Response from Rasa: ', botResponse, '\nStatus: ', status);
@@ -230,7 +229,7 @@ function setBotResponse(response) {
     hideBotTyping();
     if (response.length < 1) {
       //if there is no response from Rasa, send  fallback message to the user
-      var fallbackMsg = 'Sajnos nem értettem, át tudnád fogalmazni a kérdést?';
+      var fallbackMsg = '<p class="botMsg">Sajnos nem értettem, át tudnád fogalmazni a kérdést?';
       var BotResponse =
         fallbackMsg +
         '</p><div class="clearfix"></div>';
@@ -307,7 +306,7 @@ function hideBotTyping() {
   $('.botTyping').remove();
 }
 
-//TTS stuff
+//TTS
 
 function concat(arrays) {
   // sum of individual array lengths
@@ -359,7 +358,7 @@ const tts = (text) => {
 };
 
 /*
-Speech2Text stuff
+Speech2Text
 */
 const extract_text = (object) => {
   let message = JSON.stringify(object);
@@ -368,15 +367,12 @@ const extract_text = (object) => {
 
 function SpeechtexAsrHandler() {
   this.controlReceived = function (msg) {
-    console.log('control');
     console.log('MSG: [' + msg.type + '] ' + msg.msg + ' (' + msg.params + ')');
   };
   this.errorReceived = function (msg) {
-    console.log('error');
     console.log('MSG: [' + msg.type + '] ' + msg.msg + ' (' + msg.params + ')');
   };
   this.resultReceived = function (msg) {
-    //Modify this
     const extracted_text = extract_text(msg.params);
     if (msg.msg === '0') {    
       document.getElementById('userInput').value = extracted_text;
@@ -574,7 +570,6 @@ function SpeechtexAsrConnection(wsProxyUrl) {
         ws.send(control);
       } else{
         waitForSocketConnection(ws, function(){
-          console.log("message sent!!!");
           ws.send(control);
       });
       }
@@ -594,12 +589,13 @@ function SpeechtexAsrConnection(wsProxyUrl) {
   /*
   Csatlakozas adott modellt futtato felismero csatornahoz
   */
-  this.bindAsrChannel = function (model) { //one
+  this.bindAsrChannel = function (model) {
     fromWhere = 'connect';
     sendControl(MSG_OUT_GET_MODELS);
     sendControl(MSG_OUT_DISCONNECT);
     sendControl(MSG_OUT_BIND_REQUEST + ';' + model);
   };
+  
   /*
   Felismeres inditasa
   */
@@ -666,30 +662,23 @@ function connect(ws_addr) {
   spAsrConn.setHandler(handler);
   spAsrConn.connect();
 }
+
 function disconnect() {
   spAsrConn.disconnect();
 }
+
 function bindAsrChannel(model) {
   spAsrConn.bindAsrChannel(model);
-  // console.log("spAsrCo");
 }
+
 function startDictate() {
   spAsrConn.startRecognition();
 }
+
 function stopDictate() {
   spAsrConn.stopRecognition();
 }
-// function uploadDic() {
-//   var dic = [
-//     ['Saab', 'száb'],
-//     ['Toyota', 'tojota'],
-//     ['Seat', 'szeát'],
-//     ['Mitsubishi', 'micubisi'],
-//     ['BMW', 'béemvé']
-//   ];
 
-//   spAsrConn.generateLoopback(dic);
-// }
 function getModels() {
   spAsrConn.getModels();
 }

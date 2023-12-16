@@ -68,3 +68,17 @@ nlu:
       - [nem hiszem, hogy ez a válasz helyes.](userfeedback)
       - [jó választ kaptam](userfeedback)
       - [helyes választ kaptam a kérdésemre](userfeedback)
+
+  - intent: greet
+    examples: |
+      - Szia
+      - Helló
+      - Szép napot
+      - Jó napot
+      - Jó napot kívánok
+      - Üdv
+      - Szevasz
+      - Üdvözlöm
+      - Szió
+      - Hali
+  

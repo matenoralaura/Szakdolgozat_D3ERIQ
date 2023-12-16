@@ -14,6 +14,7 @@ intents:
 - cancel_feedback
 - user_feedback
 - userfeedback_form
+- greet
 
 entities:
 - userfeedback
@@ -35,13 +36,14 @@ responses:
 
 actions:
   - '...'
-  - action_write_feedback
+  - action_confirm_feedback
   - action_question
   - action_feedback
   - action_begin
   - action_cancel_feedback
   - action_send_feedback
   - validate_userfeedback_form
+  - action_greet
 
 forms:
   userfeedback_form:

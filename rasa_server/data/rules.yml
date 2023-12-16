@@ -17,7 +17,7 @@ rules:
   - rule: give-feedback rule
     steps:
     - intent: give-feedback
-    - action: action_write_feedback
+    - action: action_confirm_feedback
     
   - rule: ask for feedback rule
     steps:
@@ -40,4 +40,9 @@ rules:
     steps:
     - intent: cancel_feedback
     - action: action_cancel_feedback
+
+  - rule: greet rule
+    steps:
+    - intent: greet
+    - action: action_greet
   
